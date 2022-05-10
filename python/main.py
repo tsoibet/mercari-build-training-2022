@@ -6,6 +6,8 @@ from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+FILENAME = "items.json"
+
 app = FastAPI()
 logger = logging.getLogger("uvicorn")
 logger.level = logging.INFO
@@ -23,11 +25,15 @@ app.add_middleware(
 def root():
     return {"message": "Hello, world!"}
 
+@app.get("/items")
+def get_items():
+    return load_file_to_json()
+
 @app.post("/items")
 def add_item(name: str = Form(...), category: str = Form(...)):
     write_json({"name": name, "category": category})
-    logger.info(f"Receive item: {name} in {category}")
-    return {"message": f"item received: {name} in {category}"}
+    logger.info(f"Receive item: {name}")
+    return {"message": f"item received: {name}"}
 
 @app.get("/image/{items_image}")
 async def get_image(items_image):
@@ -43,9 +49,13 @@ async def get_image(items_image):
 
     return FileResponse(image)
 
-def write_json(new_data, filename="items.json"):
-    with open(filename, 'r') as file:
+def load_file_to_json():
+    with open(FILENAME, 'r') as file:
         file_data = json.load(file)
-    with open(filename, 'w') as file:
+    return file_data
+
+def write_json(new_data):
+    file_data = load_file_to_json()
+    with open(FILENAME, 'w') as file:
         file_data["items"].append(new_data)
         json.dump(file_data, file)
