@@ -2,11 +2,13 @@ import os
 import logging
 import pathlib
 import json
+import sqlite3
 from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 FILENAME = "items.json"
+DATABASE_NAME = "../db/mercari.sqlite3"
 
 app = FastAPI()
 logger = logging.getLogger("uvicorn")
@@ -20,6 +22,17 @@ app.add_middleware(
     allow_methods=["GET","POST","PUT","DELETE"],
     allow_headers=["*"],
 )
+
+@app.on_event("startup")
+def database_connect():
+    conn = sqlite3.connect(DATABASE_NAME)
+    cur = conn.cursor()
+    with open('../db/items.db') as schema_file:
+        schema = schema_file.read()
+    cur.execute(f'''{schema}''')
+    conn.commit()
+    logger.info("Database initialization complete.")
+    cur.close()
 
 @app.get("/")
 def root():
