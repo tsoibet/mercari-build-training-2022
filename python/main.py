@@ -57,6 +57,16 @@ def add_item(name: str = Form(...), category: str = Form(...)):
     logger.info(f"Receive item: {name}")
     return {"message": f"item received: {name}"}
 
+@app.get("/search")
+def search_item(keyword: str):
+    conn = sqlite3.connect(DATABASE_NAME)
+    cur = conn.cursor()
+    cur.execute('''SELECT * FROM items WHERE name LIKE (?)''', (f"%{keyword}%", ))
+    items = cur.fetchall()
+    conn.close()
+    logger.info(f"Get items with name containing {keyword}")
+    return items
+
 @app.get("/image/{items_image}")
 async def get_image(items_image):
     # Create image path
