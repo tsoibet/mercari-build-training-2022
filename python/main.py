@@ -3,6 +3,7 @@ import logging
 import pathlib
 import json
 import sqlite3
+import hashlib
 from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -48,10 +49,11 @@ def get_items():
     return items
 
 @app.post("/items")
-def add_item(name: str = Form(...), category: str = Form(...)):
+def add_item(name: str = Form(...), category: str = Form(...), image: str = Form(...)):
     conn = sqlite3.connect(DATABASE_NAME)
     cur = conn.cursor()
-    cur.execute('''INSERT INTO items(name, category) VALUES (?, ?)''', (name, category))
+    hashed_filename = hashlib.sha256(image.replace(".jpg", "").encode('utf-8')).hexdigest() + ".jpg"
+    cur.execute('''INSERT INTO items(name, category, image) VALUES (?, ?, ?)''', (name, category, hashed_filename))
     conn.commit()
     conn.close()
     logger.info(f"Receive item: {name}")
