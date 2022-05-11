@@ -41,12 +41,15 @@ def root():
 @app.get("/items")
 def get_items():
     conn = sqlite3.connect(DATABASE_NAME)
+    conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    cur.execute('''SELECT * FROM items''')
+    cur.execute('''SELECT name, category, image FROM items''')
     items = cur.fetchall()
+    item_list = [dict(item) for item in items]
+    items_json = {"items": item_list}
     conn.close()
     logger.info("Get items")
-    return items
+    return items_json
 
 @app.post("/items")
 def add_item(name: str = Form(...), category: str = Form(...), image: str = Form(...)):
@@ -62,12 +65,15 @@ def add_item(name: str = Form(...), category: str = Form(...), image: str = Form
 @app.get("/search")
 def search_item(keyword: str):
     conn = sqlite3.connect(DATABASE_NAME)
+    conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    cur.execute('''SELECT * FROM items WHERE name LIKE (?)''', (f"%{keyword}%", ))
+    cur.execute('''SELECT name, category, image FROM items WHERE name LIKE (?)''', (f"%{keyword}%", ))
     items = cur.fetchall()
+    item_list = [dict(item) for item in items]
+    items_json = {"items": item_list}
     conn.close()
     logger.info(f"Get items with name containing {keyword}")
-    return items
+    return items_json
 
 @app.get("/image/{items_image}")
 async def get_image(items_image):
