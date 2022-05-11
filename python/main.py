@@ -51,6 +51,16 @@ def get_items():
     logger.info("Get items")
     return items_json
 
+@app.get("/items/{item_id}")
+def get_item(item_id):
+    conn = sqlite3.connect(DATABASE_NAME)
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute('''SELECT name, category, image FROM items WHERE id = (?)''', (item_id, ))
+    logger.info(f"Get item of id:")
+    return cur.fetchone()
+
+
 @app.post("/items")
 def add_item(name: str = Form(...), category: str = Form(...), image: str = Form(...)):
     conn = sqlite3.connect(DATABASE_NAME)
