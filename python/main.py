@@ -66,7 +66,10 @@ def add_item(name: str = Form(...), category: str = Form(...), image: str = Form
     conn = sqlite3.connect(DATABASE_NAME)
     cur = conn.cursor()
     hashed_filename = hashlib.sha256(image.replace(".jpg", "").encode('utf-8')).hexdigest() + ".jpg"
-    cur.execute('''INSERT INTO items(name, category, image) VALUES (?, ?, ?)''', (name, category, hashed_filename))
+    cur.execute('''INSERT OR IGNORE INTO category(name) VALUES (?)''', (category, ))
+    cur.execute('''SELECT id FROM category WHERE name = (?)''', (category, ))
+    category_id = cur.fetchone()[0]
+    cur.execute('''INSERT INTO items(name, category_id, image) VALUES (?, ?, ?)''', (name, category_id, hashed_filename))
     conn.commit()
     conn.close()
     logger.info(f"Receive item: {name}")
