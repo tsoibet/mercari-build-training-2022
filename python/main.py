@@ -29,7 +29,7 @@ def database_connect():
     cur = conn.cursor()
     with open('../db/items.db') as schema_file:
         schema = schema_file.read()
-    cur.execute(f'''{schema}''')
+    cur.executescript(f'''{schema}''')
     conn.commit()
     logger.info("Database initialization complete.")
     conn.close()
@@ -43,7 +43,7 @@ def get_items():
     conn = sqlite3.connect(DATABASE_NAME)
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    cur.execute('''SELECT name, category, image FROM items''')
+    cur.execute('''SELECT items.name, category.name as category, items.image FROM items INNER JOIN category ON category.id = items.category_id''')
     items = cur.fetchall()
     item_list = [dict(item) for item in items]
     items_json = {"items": item_list}
@@ -56,7 +56,7 @@ def get_item(item_id):
     conn = sqlite3.connect(DATABASE_NAME)
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    cur.execute('''SELECT name, category, image FROM items WHERE id = (?)''', (item_id, ))
+    cur.execute('''SELECT items.name, category.name as category, items.image FROM items INNER JOIN category ON category.id = items.category_id WHERE items.id = (?)''', (item_id, ))
     logger.info(f"Get item of id:")
     return cur.fetchone()
 
@@ -77,7 +77,7 @@ def search_item(keyword: str):
     conn = sqlite3.connect(DATABASE_NAME)
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    cur.execute('''SELECT name, category, image FROM items WHERE name LIKE (?)''', (f"%{keyword}%", ))
+    cur.execute('''SELECT items.name, category.name as category, items.image FROM items INNER JOIN category ON category.id = items.category_id WHERE items.name LIKE (?)''', (f"%{keyword}%", ))
     items = cur.fetchall()
     item_list = [dict(item) for item in items]
     items_json = {"items": item_list}
