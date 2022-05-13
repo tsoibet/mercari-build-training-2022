@@ -1,3 +1,7 @@
+# Make sure you are in mercari-build-training-2022 directory
+# Run "docker build -t build2022/app:latest -f python/dockerfile ." to build an image
+# Run "docker run -d -p 9000:9000 build2022/app:latest" to run the image as a container
+
 FROM python:3.10.4-slim-buster
 
 COPY db ./db
