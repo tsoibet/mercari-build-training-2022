@@ -1,4 +1,19 @@
-FROM alpine
+# Make sure you are in mercari-build-training-2022 directory
+# Run "docker build -t build2022/app:latest -f python/dockerfile ." to build an image
+# Run "docker run -d -p 9000:9000 build2022/app:latest" to run the image as a container
 
-# STEP4-4では以下は変更しない
-CMD ["python", "-V"]
+FROM python:3.10.4-slim-buster
+
+COPY db ./db
+
+WORKDIR /python
+
+COPY python/requirements.txt requirements.txt
+
+RUN pip3 install -r requirements.txt
+
+COPY python/main.py main.py
+
+COPY python/image image
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "9000"]
