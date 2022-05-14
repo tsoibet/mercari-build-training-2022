@@ -1,42 +1,129 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --theme-color: #222427;
+  --theme-accent-color: #ff333f;
+  --theme-button-hover-color: #ff6574;
+  --theme-button-active-color: #e32b36;
+  --theme-file-hover-color: #d7dbdf;
+  --theme-card-color: #ecf8ff;
+  --theme-link-color: #61dafb;
+}
+
+
+body {
+  background-color: var(--theme-color);
+  padding: 1vh 0;
+}
+
 .App {
   text-align: center;
 }
 
 .Title {
-  background-color: #222427;
   min-height: 8vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: left;
-  font-size: calc(10px + 1vmin);
-  color: white;
+  justify-content: center;
+  font-size: calc(15px + 3vmin);
+  color: var(--theme-accent-color);
+  padding: 1vh 5vw;
 }
 
 .Listing {
-  background-color: #222427;
   min-height: 8vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: left;
+  justify-content: center;
   font-size: calc(10px + 1vmin);
   color: white;
+  padding: 1vh 5vw;
+}
+
+.Listing form div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1vw;
+  flex-wrap: wrap;
+}
+
+input, input:focus, button {
+  -webkit-appearance: none;
+  appearance: none;
+  border-style: none;
+  outline-style: none;
+}
+
+input[type=text] {
+  padding: 0.5vw 1vw;
+  border-radius: 0.5vw;
+}
+
+input[type=file] {
+  cursor: pointer;
+  padding: 0.5vw;
+  font-weight: bold;
+  color: white;
+  border: 0.2vw solid white;
+  border-radius: 0.5vw;
+}
+
+input[type=file]:hover {
+  color: var(--theme-file-hover-color);
+  border: 0.2vw solid var(--theme-file-hover-color);
+}
+
+button {
+  min-width: max-content;
+  cursor: pointer;
+  background-color: var(--theme-accent-color);
+  color: white;
+  font-weight: bold;
+  padding: 1vw 2vw;
+  border-radius: 1vw;
+}
+
+button:hover {
+  background-color: var(--theme-button-hover-color);
+}
+
+button:active {
+  background-color: var(--theme-button-active-color);
+}
+
+.ItemListGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2vw;
+
+  padding: 1vh 5vw;
 }
 
 .ItemList {
-  background-color: #222427;
   min-height: 8vh;
   display: flex;
   flex-direction: column;
+  gap: 1.5vw;
   align-items: center;
   justify-content: left;
-  font-size: calc(10px + 1vmin);
-  color: white;
+  font-size: calc(7px + 1vmin);
+  color: var(--theme-color);
+  background-color: var(--theme-card-color);
+  padding: 2vw;
+  border-radius: 1vw;
+}
+
+.ItemList:hover {
+  outline: 0.5vw solid var(--theme-accent-color);
 }
 
 .App-link {
-  color: #61dafb;
+  color: var(--theme-link-color);
 }
 
 @keyframes App-logo-spin {
