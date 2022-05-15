@@ -75,6 +75,7 @@ def add_item(name: str = Form(...), category: str = Form(...), image: str = Form
     logger.info(f"Receive item: {name}")
     return {"message": f"item received: {name}"}
 
+
 @app.get("/search")
 def search_item(keyword: str):
     conn = sqlite3.connect(DATABASE_NAME)
@@ -88,12 +89,13 @@ def search_item(keyword: str):
     logger.info(f"Get items with name containing {keyword}")
     return items_json
 
-@app.get("/image/{items_image}")
-async def get_image(items_image):
-    # Create image path
-    image = images / items_image
 
-    if not items_image.endswith(".jpg"):
+@app.get("/image/{image_filename}")
+async def get_image(image_filename):
+    # Create image path
+    image = images / image_filename
+
+    if not image_filename.endswith(".jpg"):
         raise HTTPException(status_code=400, detail="Image path does not end with .jpg")
 
     if not image.exists():
