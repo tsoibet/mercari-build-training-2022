@@ -4,7 +4,7 @@ import pathlib
 import json
 import sqlite3
 import hashlib
-from fastapi import FastAPI, Form, HTTPException
+from fastapi import FastAPI, Form, HTTPException, File, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -43,7 +43,7 @@ def get_items():
     conn = sqlite3.connect(DATABASE_NAME)
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    cur.execute('''SELECT items.name, category.name as category, items.image FROM items INNER JOIN category ON category.id = items.category_id''')
+    cur.execute('''SELECT items.name, category.name as category, items.image as image_filename FROM items INNER JOIN category ON category.id = items.category_id''')
     items = cur.fetchall()
     item_list = [dict(item) for item in items]
     items_json = {"items": item_list}
@@ -62,14 +62,21 @@ def get_item(item_id):
 
 
 @app.post("/items")
-def add_item(name: str = Form(...), category: str = Form(...), image: str = Form(...)):
+async def add_item(name: str = Form(...), category: str = Form(...), image: UploadFile = File(...)):
     conn = sqlite3.connect(DATABASE_NAME)
     cur = conn.cursor()
-    hashed_filename = hashlib.sha256(image.replace(".jpg", "").encode('utf-8')).hexdigest() + ".jpg"
+
+    image_binary = await image.read()
+    new_image_name = hashlib.sha256(image_binary).hexdigest() + ".jpg"
+    
+    image_path = "./image/" + new_image_name
+    with open(image_path, 'wb') as image_file:
+        image_file.write(image_binary)
+
     cur.execute('''INSERT OR IGNORE INTO category(name) VALUES (?)''', (category, ))
     cur.execute('''SELECT id FROM category WHERE name = (?)''', (category, ))
     category_id = cur.fetchone()[0]
-    cur.execute('''INSERT INTO items(name, category_id, image) VALUES (?, ?, ?)''', (name, category_id, hashed_filename))
+    cur.execute('''INSERT INTO items(name, category_id, image) VALUES (?, ?, ?)''', (name, category_id, new_image_name))
     conn.commit()
     conn.close()
     logger.info(f"Receive item: {name}")

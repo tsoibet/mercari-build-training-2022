@@ -24,6 +24,10 @@ export const Listing: React.FC<Prop> = (props) => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [event.target.name]: event.target.value });
   };
+  const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValues({ ...values, [event.target.name]: event.target.files![0] });
+  };
+
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData()
@@ -51,7 +55,7 @@ export const Listing: React.FC<Prop> = (props) => {
         <div>
           <input type='text' name='name' id='name' placeholder='name' onChange={onChange} required />
           <input type='text' name='category' id='category' placeholder='category' onChange={onChange} />
-          <input type='file' name='image' id='image' placeholder='image' onChange={onChange} />
+          <input type='file' name='image' id='image' placeholder='image' onChange={onImageChange} required />
           <button type='submit'>List this item</button>
         </div>
       </form>
