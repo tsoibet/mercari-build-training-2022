@@ -122,6 +122,12 @@ button:active {
   outline: 0.5vw solid var(--theme-accent-color);
 }
 
+.ItemList img
+{
+  max-width: 100%;
+  max-height: 15vh;
+}
+
 .App-link {
   color: var(--theme-link-color);
 }
