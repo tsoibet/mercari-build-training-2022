@@ -83,10 +83,12 @@ async def add_item(name: str = Form(...), category: str = Form(...), image: Uplo
     with open(image_path, 'wb') as image_file:
         image_file.write(image_binary)
 
-    cur.execute('''INSERT OR IGNORE INTO category(name) VALUES (?)''', (category, ))
     cur.execute('''SELECT id FROM category WHERE name = (?)''', (category, ))
-    category_id = cur.fetchone()[0]
-    cur.execute('''INSERT INTO items(name, category_id, image) VALUES (?, ?, ?)''', (name, category_id, new_image_name))
+    category_result = cur.fetchone()
+    if (category_result is None):
+        cur.execute('''INSERT INTO category(name) VALUES (?) RETURNING id''', (category, ))
+        category_result = cur.fetchone()
+    cur.execute('''INSERT INTO items(name, category_id, image) VALUES (?, ?, ?)''', (name, category_result[0], new_image_name))
     conn.commit()
     conn.close()
     logger.info(f"Receive item: {name}")
