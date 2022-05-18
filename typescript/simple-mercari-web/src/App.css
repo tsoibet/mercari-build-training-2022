@@ -24,7 +24,7 @@
   padding: 0;
   box-sizing: border-box;
 
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: Verdana, sans-serif;
 }
 
 
@@ -45,6 +45,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: calc(15px + 3vmin);
+  letter-spacing: 0.1rem;
   color: var(--theme-color-attention-default);
   padding: 1vh 5vw;
 }
