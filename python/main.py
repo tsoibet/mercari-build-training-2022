@@ -12,7 +12,7 @@ DATABASE_NAME = "../db/mercari.sqlite3"
 SCHEMA_NAME = "../db/items.db"
 
 logger = logging.getLogger("uvicorn")
-logger.setLevel(os.environ.get('LOGLEVEL', 'DEBUG').upper())
+logger.setLevel(os.environ.get('LOGLEVEL', 'INFO').upper())
 
 conn = sqlite3.connect(DATABASE_NAME, check_same_thread=False)
 logger.info("Connected to database.")
