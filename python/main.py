@@ -47,7 +47,7 @@ def get_items():
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
-        SELECT items.name, category.name as category, items.image as image_filename 
+        SELECT items.id, items.name, category.name as category, items.image as image_filename 
         FROM items INNER JOIN category 
         ON category.id = items.category_id
     ''')
@@ -62,7 +62,7 @@ def get_item(item_id):
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
-        SELECT items.name, category.name as category, items.image 
+        SELECT items.id, items.name, category.name as category, items.image 
         FROM items INNER JOIN category 
         ON category.id = items.category_id 
         WHERE items.id = (?)
@@ -97,7 +97,7 @@ def search_item(keyword: str):
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
-        SELECT items.name, category.name as category, items.image 
+        SELECT items.id, items.name, category.name as category, items.image 
         FROM items INNER JOIN category 
         ON category.id = items.category_id 
         WHERE items.name LIKE (?)
