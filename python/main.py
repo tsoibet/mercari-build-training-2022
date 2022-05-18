@@ -11,9 +11,14 @@ from fastapi.middleware.cors import CORSMiddleware
 DATABASE_NAME = "../db/mercari.sqlite3"
 SCHEMA_NAME = "../db/items.db"
 
-app = FastAPI()
 logger = logging.getLogger("uvicorn")
 logger.level = logging.INFO
+
+conn = sqlite3.connect(DATABASE_NAME, check_same_thread=False)
+logger.info("Connected to database.")
+
+app = FastAPI()
+
 images = pathlib.Path(__file__).parent.resolve() / "image"
 origins = [ os.environ.get('FRONT_URL', 'http://localhost:3000') ]
 app.add_middleware(
@@ -25,15 +30,13 @@ app.add_middleware(
 )
 
 @app.on_event("startup")
-def database_connect():
-    conn = sqlite3.connect(DATABASE_NAME)
+def init_database():
     cur = conn.cursor()
     with open(SCHEMA_NAME) as schema_file:
         schema = schema_file.read()
     cur.executescript(f'''{schema}''')
     conn.commit()
-    logger.info("Database initialization complete.")
-    conn.close()
+    logger.info("Completed database initialization.")
 
 @app.get("/")
 def root():
@@ -41,7 +44,6 @@ def root():
 
 @app.get("/items")
 def get_items():
-    conn = sqlite3.connect(DATABASE_NAME)
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
@@ -52,13 +54,11 @@ def get_items():
     items = cur.fetchall()
     item_list = [dict(item) for item in items]
     items_json = {"items": item_list}
-    conn.close()
     logger.info("Get items")
     return items_json
 
 @app.get("/items/{item_id}")
 def get_item(item_id):
-    conn = sqlite3.connect(DATABASE_NAME)
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
@@ -70,10 +70,8 @@ def get_item(item_id):
     logger.info(f"Get item of id:")
     return cur.fetchone()
 
-
 @app.post("/items")
 async def add_item(name: str = Form(...), category: str = Form(...), image: UploadFile = File(...)):
-    conn = sqlite3.connect(DATABASE_NAME)
     cur = conn.cursor()
 
     image_binary = await image.read()
@@ -83,19 +81,19 @@ async def add_item(name: str = Form(...), category: str = Form(...), image: Uplo
     with open(image_path, 'wb') as image_file:
         image_file.write(image_binary)
 
-    cur.execute('''INSERT OR IGNORE INTO category(name) VALUES (?)''', (category, ))
     cur.execute('''SELECT id FROM category WHERE name = (?)''', (category, ))
-    category_id = cur.fetchone()[0]
-    cur.execute('''INSERT INTO items(name, category_id, image) VALUES (?, ?, ?)''', (name, category_id, new_image_name))
+    category_result = cur.fetchone()
+    if (category_result is None):
+        cur.execute('''INSERT INTO category(name) VALUES (?) RETURNING id''', (category, ))
+        category_result = cur.fetchone()
+    cur.execute('''INSERT INTO items(name, category_id, image) VALUES (?, ?, ?)''', (name, category_result[0], new_image_name))
     conn.commit()
-    conn.close()
     logger.info(f"Receive item: {name}")
     return {"message": f"item received: {name}"}
 
 
 @app.get("/search")
 def search_item(keyword: str):
-    conn = sqlite3.connect(DATABASE_NAME)
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
@@ -107,7 +105,6 @@ def search_item(keyword: str):
     items = cur.fetchall()
     item_list = [dict(item) for item in items]
     items_json = {"items": item_list}
-    conn.close()
     logger.info(f"Get items with name containing {keyword}")
     return items_json
 
@@ -125,3 +122,8 @@ async def get_image(image_filename):
         image = images / "default.jpg"
 
     return FileResponse(image)
+
+@app.on_event("shutdown")
+def disconnect_database():
+    conn.close()
+    logger.info("Disconnected database.")
