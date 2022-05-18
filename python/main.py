@@ -70,7 +70,7 @@ def get_item(item_id):
         ON category.id = items.category_id 
         WHERE items.id = (?)
     ''', (item_id, ))
-    logger.info(f"Returning the item of id: {itemid}.")
+    logger.info(f"Returning the item of id: {item_id}.")
     return cur.fetchone()
 
 @app.post("/items")
