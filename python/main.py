@@ -14,7 +14,7 @@ SCHEMA_NAME = "../db/items.db"
 logger = logging.getLogger("uvicorn")
 logger.level = logging.INFO
 
-conn = sqlite3.connect(DATABASE_NAME)
+conn = sqlite3.connect(DATABASE_NAME, check_same_thread=False)
 logger.info("Connected to database.")
 
 app = FastAPI()
