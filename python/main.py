@@ -34,6 +34,7 @@ def init_database():
     cur = conn.cursor()
     with open(SCHEMA_NAME) as schema_file:
         schema = schema_file.read()
+        logger.debug("Read schema file.")
     cur.executescript(f'''{schema}''')
     conn.commit()
     logger.info("Completed database initialization.")
@@ -44,6 +45,7 @@ def root():
 
 @app.get("/items")
 def get_items():
+    logger.info("Received get_items request.")
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
@@ -54,11 +56,12 @@ def get_items():
     items = cur.fetchall()
     item_list = [dict(item) for item in items]
     items_json = {"items": item_list}
-    logger.info("Get items")
+    logger.info("Returning all items.")
     return items_json
 
 @app.get("/items/{item_id}")
 def get_item(item_id):
+    logger.info(f"Received get_item request of item id: {item_id}.")
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
@@ -67,11 +70,12 @@ def get_item(item_id):
         ON category.id = items.category_id 
         WHERE items.id = (?)
     ''', (item_id, ))
-    logger.info(f"Get item of id:")
+    logger.info(f"Returning the item of id: {itemid}.")
     return cur.fetchone()
 
 @app.post("/items")
 async def add_item(name: str = Form(...), category: str = Form(...), image: UploadFile = File(...)):
+    logger.info(f"Received add_item request.")
     cur = conn.cursor()
 
     image_binary = await image.read()
@@ -88,12 +92,13 @@ async def add_item(name: str = Form(...), category: str = Form(...), image: Uplo
         category_result = cur.fetchone()
     cur.execute('''INSERT INTO items(name, category_id, image) VALUES (?, ?, ?)''', (name, category_result[0], new_image_name))
     conn.commit()
-    logger.info(f"Receive item: {name}")
-    return {"message": f"item received: {name}"}
+    logger.info(f"Item {name} of {category} category is added into database.")
+    return {"message": f"Item {name} of {category} category is received."}
 
 
 @app.get("/search")
 def search_item(keyword: str):
+    logger.info(f"Received search_item request of search keyword: {keyword}.")
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
@@ -105,12 +110,13 @@ def search_item(keyword: str):
     items = cur.fetchall()
     item_list = [dict(item) for item in items]
     items_json = {"items": item_list}
-    logger.info(f"Get items with name containing {keyword}")
+    logger.info(f"Returning items with name containing {keyword}.")
     return items_json
 
 
 @app.get("/image/{image_filename}")
 async def get_image(image_filename):
+    logger.debug(f"API endpoint get_image is called.")
     # Create image path
     image = images / image_filename
 
