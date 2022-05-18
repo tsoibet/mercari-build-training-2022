@@ -49,7 +49,7 @@ def get_items():
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
-        SELECT items.id, items.name, category.name as category, items.image as image_filename 
+        SELECT items.id, items.name, category.name as category, items.image_filename 
         FROM items INNER JOIN category 
         ON category.id = items.category_id
     ''')
@@ -65,7 +65,7 @@ def get_item(item_id):
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
-        SELECT items.id, items.name, category.name as category, items.image 
+        SELECT items.id, items.name, category.name as category, items.image_filename 
         FROM items INNER JOIN category 
         ON category.id = items.category_id 
         WHERE items.id = (?)
@@ -90,7 +90,7 @@ async def add_item(name: str = Form(...), category: str = Form(...), image: Uplo
     if (category_result is None):
         cur.execute('''INSERT INTO category(name) VALUES (?) RETURNING id''', (category, ))
         category_result = cur.fetchone()
-    cur.execute('''INSERT INTO items(name, category_id, image) VALUES (?, ?, ?)''', (name, category_result[0], new_image_name))
+    cur.execute('''INSERT INTO items(name, category_id, image_filename) VALUES (?, ?, ?)''', (name, category_result[0], new_image_name))
     conn.commit()
     logger.info(f"Item {name} of {category} category is added into database.")
     return {"message": f"Item {name} of {category} category is received."}
@@ -102,7 +102,7 @@ def search_item(keyword: str):
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
-        SELECT items.id, items.name, category.name as category, items.image 
+        SELECT items.id, items.name, category.name as category, items.image_filename 
         FROM items INNER JOIN category 
         ON category.id = items.category_id 
         WHERE items.name LIKE (?)
