@@ -80,6 +80,10 @@ input[type=text] {
   border: 0.2vw solid var(--theme-color-text-default);
 }
 
+input[type=text]:hover {
+  border: 0.2vw solid var(--theme-color-focus-ring);
+}
+
 input[type=file] {
   cursor: pointer;
   padding: 0.5vw;
@@ -91,7 +95,7 @@ input[type=file] {
 
 input[type=file]:hover {
   color: var(--theme-color-text-highlight);
-  border: 0.2vw solid var(--theme-color-text-highlight);
+  border: 0.2vw solid var(--theme-color-focus-ring);
 }
 
 button {
