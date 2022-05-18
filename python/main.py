@@ -8,8 +8,10 @@ from fastapi import FastAPI, Form, HTTPException, File, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+origins = [ os.environ.get('FRONT_URL', 'http://localhost:3000') ]
 DATABASE_NAME = "../db/mercari.sqlite3"
 SCHEMA_NAME = "../db/items.db"
+image_dir = pathlib.Path(__file__).parent.resolve() / "image"
 
 logger = logging.getLogger("uvicorn")
 logger.setLevel(os.environ.get('LOGLEVEL', 'INFO').upper())
@@ -19,8 +21,6 @@ logger.info("Connected to database.")
 
 app = FastAPI()
 
-images = pathlib.Path(__file__).parent.resolve() / "image"
-origins = [ os.environ.get('FRONT_URL', 'http://localhost:3000') ]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -81,7 +81,7 @@ async def add_item(name: str = Form(...), category: str = Form(...), image: Uplo
     image_binary = await image.read()
     new_image_name = hashlib.sha256(image_binary).hexdigest() + ".jpg"
     
-    image_path = "./image/" + new_image_name
+    image_path = image_dir / new_image_name
     with open(image_path, 'wb') as image_file:
         image_file.write(image_binary)
 
@@ -118,14 +118,14 @@ def search_item(keyword: str):
 async def get_image(image_filename):
     logger.debug(f"API endpoint get_image is called.")
     # Create image path
-    image = images / image_filename
+    image = image_dir / image_filename
 
     if not image_filename.endswith(".jpg"):
         raise HTTPException(status_code=400, detail="Image path does not end with .jpg")
 
     if not image.exists():
         logger.info(f"Image not found: {image}")
-        image = images / "default.jpg"
+        image = image_dir / "default.jpg"
 
     return FileResponse(image)
 
