@@ -74,7 +74,7 @@ def get_items():
     return items_json
 
 @app.get("/items/{item_id}")
-def get_item(item_id):
+def get_item(item_id: int):
     logger.info(f"Received get_item request of item id: {item_id}.")
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
@@ -88,8 +88,12 @@ def get_item(item_id):
     return cur.fetchone()
 
 @app.post("/items")
-async def add_item(name: str = Form(...), category: str = Form(...), image: UploadFile = File(...)):
+async def add_item(name: str = Form(..., max_length=30), category: str = Form(..., max_length=12), image: UploadFile = File(...)):
     logger.info(f"Received add_item request.")
+
+    if image.content_type != "image/jpg":
+        raise HTTPException(400, detail="Image not in jpg format.")
+
     cur = conn.cursor()
 
     image_binary = await image.read()
@@ -129,7 +133,7 @@ def search_item(keyword: str):
 
 
 @app.get("/image/{image_filename}")
-async def get_image(image_filename):
+async def get_image(image_filename: str):
     logger.debug(f"API endpoint get_image is called.")
     # Create image path
     image = image_dir / image_filename
