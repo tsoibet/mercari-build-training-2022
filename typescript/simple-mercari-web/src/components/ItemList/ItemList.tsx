@@ -51,12 +51,14 @@ export const ItemList: React.FC<Prop> = (props) => {
         return (
           <div key={item.id} className='ItemList'>
             {/* TODO: Task 1: Replace the placeholder image with the item image */}
-            <img src={server.concat(`/image/${item.image_filename}`)}/>
-            <p>
-              <span>Name: {item.name}</span>
-              <br />
-              <span>Category: {item.category}</span>
-            </p>
+            <div className="ItemImage" style={{ 
+              backgroundImage: `url(${server}/image/${item.image_filename})`
+              }}>
+            </div>
+            <div className="ItemDescriptions">
+              <span className="ItemName">{item.name}</span>
+              <span className="ItemCategory">{item.category}</span>
+            </div>
           </div>
         )
       })}
