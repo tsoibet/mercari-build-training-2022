@@ -1,6 +1,7 @@
 * {
   --theme-color-background-default: #ffffff;
   --theme-color-background-highlight: #f5f5f5;
+  --theme-color-background-text: rgb(0, 0, 0, 0.3);
 
   --theme-color-text-default: #333;
   --theme-color-text-highlight: #999;
@@ -142,10 +143,21 @@ button:active {
   outline: 0.5vw solid var(--theme-color-focus-ring);
 }
 
-.ItemList img
-{
+.ItemList img {
   max-width: 100%;
   max-height: 15vh;
+}
+
+.ItemList .ItemDescriptions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ItemCategory {
+  color: var(--theme-color-background-default);
+  background-color: var(--theme-color-background-text);
 }
 
 .App-link {
