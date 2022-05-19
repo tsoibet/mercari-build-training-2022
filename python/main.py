@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 DATABASE_NAME = "../db/mercari.sqlite3"
 SCHEMA_NAME = "../db/items.db"
+image_dir = pathlib.Path(__file__).parent.resolve() / "image"
 
 logger = logging.getLogger("uvicorn")
 logger.setLevel(os.environ.get('LOGLEVEL', 'INFO').upper())
@@ -19,7 +20,6 @@ logger.info("Connected to database.")
 
 app = FastAPI()
 
-images = pathlib.Path(__file__).parent.resolve() / "image"
 origins = [ os.environ.get('FRONT_URL', 'http://localhost:3000') ]
 app.add_middleware(
     CORSMiddleware,
@@ -63,7 +63,7 @@ def get_items():
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
-        SELECT items.id, items.name, category.name as category, items.image as image_filename 
+        SELECT items.id, items.name, category.name as category, items.image_filename 
         FROM items INNER JOIN category 
         ON category.id = items.category_id
     ''')
@@ -79,7 +79,7 @@ def get_item(item_id):
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
-        SELECT items.id, items.name, category.name as category, items.image 
+        SELECT items.id, items.name, category.name as category, items.image_filename 
         FROM items INNER JOIN category 
         ON category.id = items.category_id 
         WHERE items.id = (?)
@@ -95,7 +95,7 @@ async def add_item(name: str = Form(...), category: str = Form(...), image: Uplo
     image_binary = await image.read()
     new_image_name = hashlib.sha256(image_binary).hexdigest() + ".jpg"
     
-    image_path = "./image/" + new_image_name
+    image_path = image_dir / new_image_name
     with open(image_path, 'wb') as image_file:
         image_file.write(image_binary)
 
@@ -104,7 +104,7 @@ async def add_item(name: str = Form(...), category: str = Form(...), image: Uplo
     if (category_result is None):
         cur.execute('''INSERT INTO category(name) VALUES (?) RETURNING id''', (category, ))
         category_result = cur.fetchone()
-    cur.execute('''INSERT INTO items(name, category_id, image) VALUES (?, ?, ?)''', (name, category_result[0], new_image_name))
+    cur.execute('''INSERT INTO items(name, category_id, image_filename) VALUES (?, ?, ?)''', (name, category_result[0], new_image_name))
     conn.commit()
     logger.info(f"Item {name} of {category} category is added into database.")
     return {"message": f"Item {name} of {category} category is received."}
@@ -116,7 +116,7 @@ def search_item(keyword: str):
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute('''
-        SELECT items.id, items.name, category.name as category, items.image 
+        SELECT items.id, items.name, category.name as category, items.image_filename 
         FROM items INNER JOIN category 
         ON category.id = items.category_id 
         WHERE items.name LIKE (?)
@@ -132,14 +132,14 @@ def search_item(keyword: str):
 async def get_image(image_filename):
     logger.debug(f"API endpoint get_image is called.")
     # Create image path
-    image = images / image_filename
+    image = image_dir / image_filename
 
     if not image_filename.endswith(".jpg"):
         raise HTTPException(status_code=400, detail="Image path does not end with .jpg")
 
     if not image.exists():
         logger.info(f"Image not found: {image}")
-        image = images / "default.jpg"
+        image = image_dir / "default.jpg"
 
     return FileResponse(image)
 
