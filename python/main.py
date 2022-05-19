@@ -84,8 +84,11 @@ def get_item(item_id: int):
         ON category.id = items.category_id 
         WHERE items.id = (?)
     ''', (item_id, ))
+    item_result = cur.fetchone()
+    if (item_result is None):
+        raise HTTPException(status_code=404, detail="Item not found")
     logger.info(f"Returning the item of id: {item_id}.")
-    return cur.fetchone()
+    return item_result
 
 @app.post("/items")
 async def add_item(name: str = Form(..., max_length=32), category: str = Form(..., max_length=12), image: UploadFile = File(...)):
