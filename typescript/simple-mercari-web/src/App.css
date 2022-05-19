@@ -83,7 +83,7 @@ input, input:focus, button {
 }
 
 input {
-  border: 2px solid var(--theme-color-background-highlight);
+  background-color: var(--theme-color-background-highlight);
   border-radius: calc(0.5vh + 0.5vw);
 }
 
@@ -92,7 +92,7 @@ input[type=text] {
 }
 
 input[type=text]:hover {
-  border: 2px solid var(--theme-color-focus-ring);
+  outline: 2px solid var(--theme-color-focus-ring);
 }
 
 input[type=file] {
@@ -103,7 +103,7 @@ input[type=file] {
 
 input[type=file]:hover {
   color: var(--theme-color-text-default);
-  border: 2px solid var(--theme-color-focus-ring);
+  outline: 2px solid var(--theme-color-focus-ring);
 }
 
 button {
