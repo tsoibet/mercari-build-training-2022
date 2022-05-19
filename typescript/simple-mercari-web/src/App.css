@@ -169,7 +169,9 @@ button:active {
 .ItemList .ItemDescriptions .ItemName {
   padding: 0 2vw;
   text-align: center;
-  overflow-wrap: break-word;
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis;
   max-width: 100%;
 }
 
