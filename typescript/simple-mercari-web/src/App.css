@@ -135,7 +135,7 @@ button:active {
   font-size: calc(7px + 1vmin);
   color: var(--theme-color-text-default);
   background-color: var(--theme-color-background-highlight);
-  padding: 2vw 0 calc(1vh + 1vw);
+  padding: calc(1vh + 1vw) 0;
   border-radius: 1vw;
 }
 
@@ -143,9 +143,11 @@ button:active {
   outline: 0.5vw solid var(--theme-color-focus-ring);
 }
 
-.ItemList img {
-  max-width: 100%;
-  max-height: 20vh;
+.ItemList .ItemImage {
+  width: 100%;
+  height: clamp(140px, 20vh, 300px);
+  background-size: cover;
+  background-position: center;
 }
 
 .ItemList .ItemDescriptions {
