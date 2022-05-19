@@ -36,8 +36,22 @@ def init_database():
         schema = schema_file.read()
         logger.debug("Read schema file.")
     cur.executescript(f'''{schema}''')
+    add_sample_data()
     conn.commit()
     logger.info("Completed database initialization.")
+
+def add_sample_data():
+    cur = conn.cursor()
+    cur.execute('''SELECT id FROM category''')
+    category_result = cur.fetchone()
+    if (category_result is None):
+        SAMPLE_CATEGORY_LIST = [("Fashion", ), ("Toy", ), ("Instrument", )]
+        SAMPLE_ITEM_LIST = [("Hat", 1, "sample1.jpg"), ("Teddy Bear", 2, "sample2.jpg"), ("Guitar", 3, "sample3.jpg")]
+        cur.executemany('''INSERT INTO category(name) VALUES (?)''', SAMPLE_CATEGORY_LIST)
+        cur.executemany('''INSERT INTO items(name, category_id, image) VALUES (?, ?, ?)''', SAMPLE_ITEM_LIST)
+        logger.debug("Added sample data.")
+    else:
+        logger.debug("Data exists. No need to add sample data.")
 
 @app.get("/")
 def root():
