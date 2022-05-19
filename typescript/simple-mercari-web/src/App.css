@@ -182,6 +182,7 @@ button:active {
   align-self: flex-end;
   overflow-wrap: break-word;
   max-width: 80%;
+  font-size: 0.8rem;
 }
 
 .App-link {
