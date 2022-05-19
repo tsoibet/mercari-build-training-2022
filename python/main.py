@@ -88,7 +88,7 @@ def get_item(item_id: int):
     return cur.fetchone()
 
 @app.post("/items")
-async def add_item(name: str = Form(..., max_length=30), category: str = Form(..., max_length=12), image: UploadFile = File(...)):
+async def add_item(name: str = Form(..., max_length=32), category: str = Form(..., max_length=12), image: UploadFile = File(...)):
     logger.info(f"Received add_item request.")
 
     if image.content_type != "image/jpg":
