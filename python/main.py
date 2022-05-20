@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 DATABASE_NAME = "../db/mercari.sqlite3"
 SCHEMA_NAME = "../db/items.db"
+ERR_MSG = "ERROR"
 image_dir = pathlib.Path(__file__).parent.resolve() / "image"
 
 logger = logging.getLogger("uvicorn")
@@ -61,6 +62,7 @@ def add_sample_data():
             logger.debug("Data exists. No need to add sample data.")
     except Exception as e:
         logger.warn(f"Failed to add sample data. Error message: {e}")
+        return ERR_MSG
 
 @app.get("/")
 def root():
@@ -84,6 +86,7 @@ def get_items():
         return items_json
     except Exception as e:
         logger.warn(f"Failed to get items. Error message: {e}")   
+        return ERR_MSG
 
 @app.get("/items/{item_id}")
 def get_item(item_id: int):
@@ -102,8 +105,12 @@ def get_item(item_id: int):
             raise HTTPException(status_code=404, detail="Item not found")
         logger.info(f"Returning the item of id: {item_id}.")
         return item_result
+    except HTTPException:
+        logger.info("Failed to get item: Item not found")
+        return "Item not found"
     except Exception as e:
         logger.warn(f"Failed to get item. Error message: {e}")
+        return ERR_MSG
 
 @app.post("/items")
 async def add_item(name: str = Form(..., max_length=32), category: str = Form(..., max_length=12), image: UploadFile = File(...)):
@@ -133,7 +140,7 @@ async def add_item(name: str = Form(..., max_length=32), category: str = Form(..
         return {"message": f"Item {name} of {category} category is received."}
     except Exception as e:
         logger.warn(f"Failed to add item. Error message: {e}")
-
+        return ERR_MSG
 
 @app.get("/search")
 def search_item(keyword: str):
@@ -154,7 +161,7 @@ def search_item(keyword: str):
         return items_json
     except Exception as e:
         logger.warn(f"Failed to search items. Error message: {e}")
-
+        return ERR_MSG
 
 @app.get("/image/{image_filename}")
 async def get_image(image_filename: str):
