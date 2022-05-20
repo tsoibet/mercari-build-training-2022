@@ -51,7 +51,7 @@ export const Listing: React.FC<Prop> = (props) => {
   };
   return (
     <div className='Listing'>
-      <form onSubmit={onSubmit}>
+      <form autoComplete='off' onSubmit={onSubmit}>
         <div className='InputBox'>
           <input type='text' name='name' id='name' placeholder='name' maxLength={30} onChange={onChange} required />
           <input type='text' name='category' id='category' placeholder='category' maxLength={12} onChange={onChange} required/>
