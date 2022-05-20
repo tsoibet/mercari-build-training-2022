@@ -91,7 +91,7 @@ def get_item(item_id: int):
 async def add_item(name: str = Form(..., max_length=32), category: str = Form(..., max_length=12), image: UploadFile = File(...)):
     logger.info(f"Received add_item request.")
 
-    if image.content_type != "image/jpg":
+    if image.content_type != "image/jpeg":
         raise HTTPException(400, detail="Image not in jpg format.")
 
     cur = conn.cursor()
