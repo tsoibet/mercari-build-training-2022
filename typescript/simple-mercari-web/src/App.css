@@ -96,6 +96,10 @@ input[type=text]:hover {
   outline: 2px solid var(--theme-color-focus-ring);
 }
 
+input[type=text]:focus:invalid {
+  outline: 2px solid var(--theme-color-attention-highlight);
+}
+
 input[type=file] {
   cursor: pointer;
   color: var(--theme-color-text-highlight);
@@ -104,6 +108,10 @@ input[type=file] {
 input[type=file]:hover {
   color: var(--theme-color-text-default);
   outline: 2px solid var(--theme-color-focus-ring);
+}
+
+input[type=file]:focus:invalid {
+  outline: 2px solid var(--theme-color-attention-highlight);
 }
 
 button {
