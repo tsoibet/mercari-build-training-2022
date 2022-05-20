@@ -32,7 +32,6 @@
 body {
   color: var(--theme-color-text-default);
   background-color: var(--theme-color-background-default);
-  padding: 1vh 0;
 }
 
 .App {
@@ -48,13 +47,14 @@ body {
   font-size: calc(15px + 3vmin);
   letter-spacing: 0.1rem;
   color: var(--theme-color-attention-default);
-  padding: 1vh 5vw;
+  padding: calc(1vh + 1vw) 5vw calc(0.5vh + 0.5vw);
 }
 
 .Listing {
   min-height: 8vh;
   font-size: calc(10px + 1vmin);
-  padding: 1vh 5vw;
+  padding: calc(1vh + 1vw) 5vw;
+  box-shadow: 0 3px 3px var(--theme-color-background-highlight);
 }
 
 .Listing form {
@@ -85,10 +85,11 @@ input, input:focus, button {
 input {
   background-color: var(--theme-color-background-highlight);
   border-radius: calc(0.5vh + 0.5vw);
+  padding: calc(0.4vh + 0.2vw) calc(0.8vh + 0.8vw);
 }
 
 input[type=text] {
-  padding: 0.5vw 1vw;
+  color: var(--theme-color-text-default);
 }
 
 input[type=text]:hover {
@@ -97,7 +98,6 @@ input[type=text]:hover {
 
 input[type=file] {
   cursor: pointer;
-  padding: 0.5vw;
   color: var(--theme-color-text-highlight);
 }
 
@@ -129,7 +129,7 @@ button:active {
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 2vw;
 
-  padding: 1vh 5vw;
+  padding: calc(2vh + 1.5vw) 5vw;
 }
 
 .ItemList {
@@ -139,7 +139,7 @@ button:active {
   gap: calc(1vh + 0.5vw);
   align-items: center;
   justify-content: center;
-  font-size: calc(7px + 1vmin);
+  font-size: calc(6px + 1vmin);
   color: var(--theme-color-text-default);
   background-color: var(--theme-color-background-highlight);
   padding: calc(1vh + 1vw) 0;
@@ -184,7 +184,7 @@ button:active {
   align-self: flex-end;
   overflow-wrap: break-word;
   max-width: 80%;
-  font-size: 0.8rem;
+  font-size: 0.9em;
 }
 
 .App-link {
