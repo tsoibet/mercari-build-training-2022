@@ -105,6 +105,9 @@ def get_item(item_id: int):
             raise HTTPException(status_code=404, detail="Item not found")
         logger.info(f"Returning the item of id: {item_id}.")
         return item_result
+    except HTTPException:
+        logger.info("Failed to get item: Item not found")
+        return "Item not found"
     except Exception as e:
         logger.warn(f"Failed to get item. Error message: {e}")
         return ERR_MSG
