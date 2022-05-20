@@ -112,6 +112,27 @@ def get_item(item_id: int):
         logger.warn(f"Failed to get item. Error message: {e}")
         return ERR_MSG
 
+@app.delete("/items/{item_id}")
+def get_item(item_id: int):
+    logger.info(f"Received delete_item request of item id: {item_id}.")
+    try:
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+        cur.execute('''SELECT name FROM items WHERE id = (?)''', (item_id, ))
+        item_result = cur.fetchone()
+        if (item_result is None):
+            raise HTTPException(status_code=404, detail="Item not found")
+        cur.execute('''DELETE FROM items WHERE id = (?)''', (item_id, ))
+        conn.commit()
+        logger.info(f"Deleted item {item_result[0]} of id: {item_id}.")
+        return {"message": f"Deleted item {item_result[0]} of id: {item_id}."}
+    except HTTPException:
+        logger.info("Failed to delete item: Item not found")
+        return "Item not found"
+    except Exception as e:
+        logger.warn(f"Failed to get item. Error message: {e}")
+        return ERR_MSG
+
 @app.post("/items")
 async def add_item(name: str = Form(..., max_length=32), category: str = Form(..., max_length=12), image: UploadFile = File(...)):
     logger.info(f"Received add_item request.")
