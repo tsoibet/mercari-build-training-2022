@@ -134,7 +134,7 @@ button:active {
 
 .ItemListGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 2vw;
 
   padding: calc(2vh + 1.5vw) 5vw;
@@ -150,8 +150,9 @@ button:active {
   font-size: calc(6px + 1vmin);
   color: var(--theme-color-text-default);
   background-color: var(--theme-color-background-highlight);
-  padding: calc(1vh + 1vw) 0;
+  padding: 0 0 calc(0.5vh + 0.5vw);
   border-radius: 1vw;
+  overflow: hidden;
 }
 
 .ItemList:hover {
