@@ -153,7 +153,8 @@ async def add_item(name: str = Form(..., max_length=32), category: str = Form(..
         cur.execute('''SELECT id FROM category WHERE name = (?)''', (category, ))
         category_result = cur.fetchone()
         if (category_result is None):
-            cur.execute('''INSERT INTO category(name) VALUES (?) RETURNING id''', (category, ))
+            cur.execute('''INSERT INTO category(name) VALUES (?)''', (category, ))
+            cur.execute('''SELECT id FROM category WHERE name = (?)''', (category, ))
             category_result = cur.fetchone()
         cur.execute('''INSERT INTO items(name, category_id, image_filename) VALUES (?, ?, ?)''', (name, category_result[0], new_image_name))
         conn.commit()
