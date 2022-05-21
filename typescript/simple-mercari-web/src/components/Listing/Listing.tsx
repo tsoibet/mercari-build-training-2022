@@ -44,6 +44,8 @@ export const Listing: React.FC<Prop> = (props) => {
       .then(data => {
         console.log('POST success:', data);
         onListingCompleted && onListingCompleted();
+        setValues(initialState);
+        (document.getElementById('image') as HTMLInputElement).value = "";
       })
       .catch((error) => {
         console.error('POST error:', error);
@@ -51,10 +53,10 @@ export const Listing: React.FC<Prop> = (props) => {
   };
   return (
     <div className='Listing'>
-      <form onSubmit={onSubmit}>
+      <form autoComplete='off' onSubmit={onSubmit}>
         <div className='InputBox'>
-          <input type='text' name='name' id='name' placeholder='name' maxLength={30} onChange={onChange} required />
-          <input type='text' name='category' id='category' placeholder='category' maxLength={12} onChange={onChange} required/>
+          <input type='text' name='name' id='name' placeholder='name' maxLength={30} value={values.name} onChange={onChange} required />
+          <input type='text' name='category' id='category' placeholder='category' maxLength={12} value={values.category} onChange={onChange} required/>
           <input type='file' name='image' id='image' accept='.jpg' onChange={onImageChange} required />
         </div>
         <div className='SubmitButton'>
