@@ -39,8 +39,6 @@ Below are the constraints:
 
 ## :iphone: Responsive web design :desktop_computer:
 
-Examples:
-
 | iPhone XR (414x896) | iPad mini (768x1024) | Desktop (1333x1000) |
 | :---: | :---: | :---: |
 | <img height="300" alt="iPhone" src="https://user-images.githubusercontent.com/59286368/169643854-c589faa3-0170-4018-81ab-9d8ce2c26219.png"> | <img height="300" alt="iPad" src="https://user-images.githubusercontent.com/59286368/169643860-a5a65b20-858f-44e1-a91b-a0051a3a224f.png"> | <img height="300" alt="Desktop" src="https://user-images.githubusercontent.com/59286368/169643864-668bb834-775e-44ee-be55-3af7147b11f0.png"> |
