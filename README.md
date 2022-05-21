@@ -1,4 +1,4 @@
-# Simple Mercari - Build@Mercari Training Program 2022
+# Build@Mercari Training Program 2022
 
 This is a simple mercari web application.
 
@@ -37,7 +37,7 @@ Below are the constraints:
 3. Visit http://localhost:3000
 
 
-## :iphone: Reponsive web design :desktop_computer:
+## :iphone: Responsive web design :desktop_computer:
 
 Examples:
 
