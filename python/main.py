@@ -53,8 +53,8 @@ def add_sample_data():
         cur.execute('''SELECT id FROM category''')
         category_result = cur.fetchone()
         if (category_result is None):
-            SAMPLE_CATEGORY_LIST = [("Fashion", ), ("Toy", ), ("Instrument", )]
-            SAMPLE_ITEM_LIST = [("Hat", 1, "sample1.jpg"), ("Teddy Bear", 2, "sample2.jpg"), ("Guitar", 3, "sample3.jpg")]
+            SAMPLE_CATEGORY_LIST = [("Toy", ), ("Fruit", ), ("Dog Fashion", )]
+            SAMPLE_ITEM_LIST = [("Broken toy", 1, "sample1.jpg"), ("Miyazaki mango", 2, "sample2.jpg"), ("New year costume for dog", 3, "sample3.jpg"), ("Dog hat", 3, "sample4.jpg")]
             cur.executemany('''INSERT INTO category(name) VALUES (?)''', SAMPLE_CATEGORY_LIST)
             cur.executemany('''INSERT INTO items(name, category_id, image_filename) VALUES (?, ?, ?)''', SAMPLE_ITEM_LIST)
             logger.debug("Added sample data.")
