@@ -47,7 +47,8 @@ Below are the constraints:
 
 #### Remarks 
 
-:pushpin: *As python was used to write the backend API, the `go` directory is not used.*  
+:pushpin: *There are two directories `python` and `go` for the backend, and I have chosen to use `python` for this training program.  
+:pushpin: While I also tried to write in `go`, if you would like to run the `go` version, please run the `python` version beforehand because database initialization is not implemented in `go`.*  
 :pushpin: *Branches are remained in the repository for record of progress. Earlier steps are labelled with git tags.*  
 
 <br/>
